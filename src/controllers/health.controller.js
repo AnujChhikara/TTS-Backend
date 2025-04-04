@@ -1,10 +1,12 @@
-const healthcheck = (req, res) => {
-  const message = "eVeRyThInG iS fInE wItH tHe ApP";
+const healthCheck = (req, res) => {
+  const message = 'eVeRyThInG iS fInE wItH tHe ApP'
   try {
-    return res.status(200).json({ msg: message });
-  } catch (error) {
-    return res.status(400).json({ msg: "Server is down!" });
-  }
-};
+    return res.status(200).json({ msg: message })
+  } catch (err) {
+    console.log(err)
 
-export { healthcheck };
+    return res.status(400).json({ msg: 'Server is down!' })
+  }
+}
+
+export { healthCheck }
