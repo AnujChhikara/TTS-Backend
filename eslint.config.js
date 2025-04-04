@@ -1,6 +1,6 @@
 import { defineConfig } from 'eslint/config'
-import globals from 'globals'
 import js from '@eslint/js'
+import globals from 'globals'
 
 export default defineConfig([
   {
@@ -8,10 +8,8 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: globals.node, // ✅ this tells ESLint you're using Node.js
+      globals: globals.node,
     },
-    plugins: { js },
-    rules: {}, // optional custom rules
-    extends: ['plugin:@eslint/js/recommended'],
+    ...js.configs.recommended,
   },
 ])
