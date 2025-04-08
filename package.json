@@ -17,6 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.6.0",
@@ -33,6 +34,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "prisma": "^6.5.0"
   }
 }
