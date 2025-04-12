@@ -1,21 +1,128 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql" 
   url      = env("DATABASE_URL")
 }
 
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        String   @id @default(cuid()) 
+  googleId  String   @unique 
+  email     String   @unique
+  name      String?           
+  picture   String?           
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  interviews Interview[]
 }
+
+
+model Interview {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime  @default(now())
+  completedAt       DateTime?
+  updatedAt         DateTime  @updatedAt
+
+  type              InterviewType @default(GENERAL)
+  jobRole           String?
+  jobLevel          String?
+  focusArea         String?   @db.Text
+
+  overallScore      Float?
+  overallFeedback   String?   @db.Text
+  keyStrengths      String?   @db.Text
+  keyWeaknesses     String?   @db.Text
+  clarityScore      Float?
+  concisenessScore  Float?
+  relevanceScore    Float?
+  confidenceScore   Float?
+  pacingFeedback    String?   @db.Text
+  analysisComplete Boolean @default(false)
+  sessionName String?
+
+  conversationEntries ConversationEntry[]
+  skillSummaries      InterviewSkillSummary[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum InterviewType {
+  BEHAVIORAL
+  TECHNICAL_CODING
+  TECHNICAL_SYSTEM_DESIGN
+  PRODUCT_MANAGEMENT
+  GENERAL
+}
+
+model ConversationEntry {
+  id                  String    @id @default(cuid())
+  interviewId         String
+  interview           Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  sequence            Int
+
+  questionText        String    @db.Text
+  answerText          String    @db.Text
+  audioUrl            String?
+
+  answerScore         Float?
+  answerFeedback      String?   @db.Text
+  answerWordCount     Int?
+  answerDurationSeconds Int?
+
+  createdAt           DateTime  @default(now())
+
+  skillFeedback       AnswerSkillFeedback[]
+
+  @@index([interviewId, sequence])
+}
+
+
+model Skill {
+  id          String @id @default(cuid())
+  name        String @unique 
+  description String?        
+
+  answerFeedback AnswerSkillFeedback[] 
+  interviewSummaries InterviewSkillSummary[] 
+}
+
+model AnswerSkillFeedback {
+  id                  String            @id @default(cuid())
+  conversationEntryId String            // Foreign key to ConversationEntry
+  conversationEntry   ConversationEntry @relation(fields: [conversationEntryId], references: [id], onDelete: Cascade) 
+  skillId             String            // Foreign key to Skill
+  skill               Skill             @relation(fields: [skillId], references: [id], onDelete: Cascade) 
+  score               Float            
+  feedbackText        String? @db.Text  
+
+  createdAt DateTime @default(now())
+
+  @@unique([conversationEntryId, skillId]) 
+  @@index([conversationEntryId])
+  @@index([skillId])
+}
+
+model InterviewSkillSummary {
+  id           String    @id @default(cuid())
+  interviewId  String                      
+  interview    Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade) 
+  skillId      String                   
+  skill        Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade) 
+  summaryText  String?   @db.Text         
+
+  createdAt DateTime @default(now())
+
+  @@unique([interviewId, skillId])
+  @@index([interviewId])
+  @@index([skillId])
+}
+

@@ -7,8 +7,6 @@ dotenv.config({
 
 const port = process.env.PORT || 8000
 
-console.log('PORT from env:', process.env.PORT)
-
 app.listen(port, () => {
   console.log(`Server is running at ${port}`)
 })
