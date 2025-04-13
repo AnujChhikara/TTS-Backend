@@ -7,10 +7,9 @@ import passport from 'passport'
 
 const app = express()
 
-// Add this BEFORE your routes
 app.use(
   session({
-    secret: 'dslkfjwe98yru9w',
+    secret: process.env.AUTH_SECRET,
     resave: false,
     saveUninitialized: false,
   }),
@@ -32,10 +31,12 @@ app.use(cookieParser())
 import healthRouter from './routes/health.routes.js'
 import synthesis from './routes/convTemp.route.js'
 import auth from './routes/auth.route.js'
+import chat from './routes/chat.router.js'
 
 //routes declaration
 app.use('/api/v1/health', healthRouter)
 app.use('/api/v1/synth', synthesis)
 app.use('/api/v1/auth', auth)
+app.use('/api/v1/chat', chat)
 
 export default app

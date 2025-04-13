@@ -14,16 +14,8 @@ router.route('/google/callback').get(
     failureRedirect: '/login',
   }),
   (req, res) => {
-    res.redirect('/api/v1/auth/profile')
+    res.redirect('/')
   },
 )
-
-// Profile Route
-router.route('/profile').get((req, res) => {
-  if (!req.isAuthenticated()) {
-    return res.redirect('/api/v1/auth/google')
-  }
-  res.send(`<h2>Welcome, ${req.user.displayName}</h2>`)
-})
 
 export default router
