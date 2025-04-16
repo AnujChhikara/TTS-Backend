@@ -1,11 +1,11 @@
 const healthCheck = (req, res) => {
-  const message = 'eVeRyThInG iS fInE wItH tHe ApP'
+  const message = 'everything is fine with the app'
   try {
     return res.status(200).json({ msg: message })
   } catch (err) {
     console.log(err)
 
-    return res.status(400).json({ msg: 'Server is down!' })
+    return res.status(500).json({ msg: 'Server is down!' })
   }
 }
 

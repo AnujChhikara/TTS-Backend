@@ -27,15 +27,12 @@ app.use(express.static('public'))
 app.use(cookieParser())
 
 //routes import
-
 import healthRouter from './routes/health.routes.js'
-import synthesis from './routes/convTemp.route.js'
 import auth from './routes/auth.route.js'
 import chat from './routes/chat.router.js'
 
 //routes declaration
 app.use('/api/v1/health', healthRouter)
-app.use('/api/v1/synth', synthesis)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/chat', chat)
 

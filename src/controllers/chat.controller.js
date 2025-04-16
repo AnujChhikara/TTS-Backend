@@ -1,17 +1,17 @@
-import { generateResponse } from '../models/gemini.models.js'
-import { synthesizeSpeech } from '../models/tts.models.js'
+import { generateResponse } from '../services/generateTextResponse.js'
+import { generateSpeechAudio } from '../services/convertTextToSpeech.js'
 
 const AnalysisUserAnswer = async (req, res) => {
-  const message = req.body.message
+  const { userResponse, sessionId, preferences } = req.body
 
   try {
-    const answer = await generateResponse(message)
-    const responseVoice = await synthesizeSpeech(answer)
+    const answer = await generateResponse(userResponse, sessionId, preferences)
+    const responseVoice = await generateSpeechAudio(answer)
     return res.status(200).json({ data: responseVoice })
   } catch (err) {
     console.log(err)
 
-    return res.status(400).json({ msg: 'Server is down!' })
+    return res.status(500).json({ msg: 'Server is down!' })
   }
 }
 
