@@ -2,8 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import db from '../lib/prisma.js'
-
+import User from '../schema/user.js'
 passport.use(
   new GoogleStrategy(
     {
@@ -13,26 +12,22 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await db.user.findUnique({
-          where: { googleId: profile.id },
-        })
-
-        if (!user) {
-          user = await db.user.create({
-            data: {
-              googleId: profile.id,
-              email: profile.emails?.[0].value || '',
-              name: profile.displayName,
-              picture: profile.photos?.[0].value || '',
-            },
+        const existingUser = await User.findOne({ googleId: profile.id })
+        if (!existingUser) {
+          const user = await User.create({
+            googleId: profile.id,
+            email: profile.emails[0].value,
+            picture: profile.photos[0].value,
+            name: profile.displayName,
           })
+
+          return done(null, user)
         }
 
-        console.log(user)
-
-        return done(null, user)
-      } catch (err) {
-        return done(err, null)
+        return done(null, existingUser)
+      } catch (error) {
+        console.error('Error in Google Strategy:', error)
+        return done(error, null)
       }
     },
   ),

@@ -14,7 +14,7 @@ router.route('/google/callback').get(
     failureRedirect: '/login',
   }),
   (req, res) => {
-    res.redirect('/')
+    res.redirect('http://localhost:3000')
   },
 )
 
